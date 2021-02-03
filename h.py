@@ -40,6 +40,8 @@ def showHelp():
             print("")
     print("")
 
+showHelp()
+
 while True:
     sel = input(f"Select one (0-{len(kits)-1}, x to exit, ? for list): ")
     if sel=="?":
