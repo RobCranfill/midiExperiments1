@@ -1,6 +1,14 @@
 #!/bin/python3
 # name that kit!
 
+import mido
+import time
+
+outPort = mido.open_output('MidiSport 1x1 MIDI 1')
+print("Open OK")
+
+FUCKING_MIDI_CHANNEL = 10 - 1 # Everyone calls it channel 10, yet we need to use the value 9 ! :-(
+
 # this is the list of SR18 kits, in order, so we can get the Program Change for each.
 kits = (
     "Ambient", "Blues01", "Blues02", "Blues03", "Blues04", "Bossa", "Brushes", "Country1", "Country2", "Country3",
@@ -20,6 +28,11 @@ kits = (
 # print(f"#101: {kits[101]}")
 # print(f"Index of 'Rock11': {kits.index('Rock11')}")
 
+def changeProgram(port, program):
+    msg = mido.Message('program_change', channel=FUCKING_MIDI_CHANNEL, program=program)
+    port.send(msg)
+    print(msg)
+
 def showHelp():
     for i in range(len(kits)):
         print(f"\t{i}: {kits[i]}", end='')
@@ -33,12 +46,13 @@ while True:
         showHelp()
         continue
     if sel=="x":
-        showHelp()
         break
     isel = int(sel)
     if isel >= len(kits) or isel < 0:
         print("Out of range!")
         continue
-    print(f"Selected #{sel}: {kits[isel]}")
+    print(f"\nSelected #{sel}: {kits[isel]}")
+    changeProgram(outPort, isel)
 
+outPort.close()
 print("Done!")
